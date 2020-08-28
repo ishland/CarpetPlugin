@@ -42,6 +42,7 @@ public class FakePlayerConnection extends PlayerConnection {
 
     @Override
     public void sendPacket(Packet<?> packet) {
+        this.networkManager.sendPacket(packet);
     }
 
     @Override

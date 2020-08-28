@@ -28,7 +28,7 @@ public class FakeChannel extends AbstractChannel {
         return new SocketAddress() {
             @Override
             public String toString() {
-                return "local";
+                return "CarpetPlugin";
             }
         };
     }
@@ -38,7 +38,7 @@ public class FakeChannel extends AbstractChannel {
         return new SocketAddress() {
             @Override
             public String toString() {
-                return "local";
+                return "CarpetPlugin";
             }
         };
     }
