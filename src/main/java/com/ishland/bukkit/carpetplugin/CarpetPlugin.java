@@ -6,13 +6,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CarpetPlugin extends JavaPlugin {
 
+    public static CarpetPlugin instance;
+
     @Override
     public void onEnable() {
-        this.getServer().getPluginManager().registerEvents(new PlayerCommand(), this);
+        instance = this;
+        new PlayerCommand().register();
     }
 
     @Override
     public void onDisable() {
         this.getLogger().warning("If this is a reload, restart your server ASAP");
+        instance = null;
     }
 }

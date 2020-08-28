@@ -19,10 +19,6 @@ repositories {
         url = 'https://oss.sonatype.org/content/groups/public/'
     }
     maven {
-        name = 'CommandAPI-repo'
-        url = "https://githubraw.smlk.org/JorelAli/CommandAPI/mvn-repo/"
-    }
-    maven {
         name = 'codemc-public'
         url = "https://repo.codemc.org/repository/maven-public/"
     }
@@ -34,11 +30,14 @@ repositories {
 
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper:1.16.2-R0.1-SNAPSHOT'
-    compileOnly "dev.jorel:commandapi-core:4.0"
 }
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
     }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 3, 'days'
 }

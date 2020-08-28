@@ -1,56 +1,48 @@
 package com.ishland.bukkit.carpetplugin.commands;
 
-import com.destroystokyo.paper.brigadier.BukkitBrigadierCommandSource;
-import com.destroystokyo.paper.event.brigadier.CommandRegisteredEvent;
 import com.google.common.base.Preconditions;
 import com.ishland.bukkit.carpetplugin.fakes.FakeEntityPlayer;
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.minecraft.server.v1_16_R2.DedicatedPlayerList;
-import net.minecraft.server.v1_16_R2.DedicatedServer;
-import net.minecraft.server.v1_16_R2.EnumGamemode;
-import net.minecraft.server.v1_16_R2.WorldServer;
+import net.minecraft.server.v1_16_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_16_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.util.Objects;
 
 import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.*;
 
-public class PlayerCommand implements Listener {
+public class PlayerCommand {
 
-    @EventHandler
-    public void register(
-            @SuppressWarnings("deprecation") CommandRegisteredEvent<BukkitBrigadierCommandSource> event) {
-        if (event.getCommandLabel().equals("player"))
-            event.setLiteral(
-                    literal("player")
-                            .requires(hasPermission("carpet.player"))
-                            .then(argument("player", StringArgumentType.word())
-                                    .suggests((ctx, builder) -> suggestMatching(getPlayers(), builder))
-                                    .then(literal("spawn")
-                                            .requires(hasPermission("carpet.player.spawn"))
-                                            .executes(PlayerCommand::spawn)
-                                    )
-                                    .then(literal("kill")
-                                            .requires(hasPermission("carpet.player.kill"))
-                                            .executes(PlayerCommand::kill)
-                                    )
-                            )
-                            .build()
-            );
+    public void register() {
+        final CommandDispatcher<CommandListenerWrapper> commandDispatcher =
+                ((CraftServer) Bukkit.getServer()).getHandle().getServer()
+                        .getCommandDispatcher().a();
+        commandDispatcher.register(literal("player")
+                .requires(hasPermission("carpet.player"))
+                .then(argument("player", StringArgumentType.word())
+                        .suggests((ctx, builder) -> suggestMatching(getPlayers(), builder))
+                        .then(literal("spawn")
+                                .requires(hasPermission("carpet.player.spawn"))
+                                .executes(PlayerCommand::spawn)
+                        )
+                        .then(literal("kill")
+                                .requires(hasPermission("carpet.player.kill"))
+                                .executes(PlayerCommand::kill)
+                        )
+                )
+        );
     }
 
-    private static int kill(CommandContext<BukkitBrigadierCommandSource> ctx) {
+    private static int kill(CommandContext<CommandListenerWrapper> ctx) {
         if (!isFakePlayer(ctx)) {
             ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
                     .append("Only fake players can be killed").color(ChatColor.RED).append("").reset()
@@ -66,7 +58,7 @@ public class PlayerCommand implements Listener {
         return 1;
     }
 
-    private static int spawn(CommandContext<BukkitBrigadierCommandSource> ctx) {
+    private static int spawn(CommandContext<CommandListenerWrapper> ctx) {
         if (!canSpawn(ctx)) return 0;
         String playerName = StringArgumentType.getString(ctx, "player");
         Preconditions.checkNotNull(playerName);
@@ -116,7 +108,7 @@ public class PlayerCommand implements Listener {
         return 1;
     }
 
-    private static boolean canSpawn(CommandContext<BukkitBrigadierCommandSource> ctx) {
+    private static boolean canSpawn(CommandContext<CommandListenerWrapper> ctx) {
         String playerName = StringArgumentType.getString(ctx, "player");
         final Location location = ctx.getSource().getBukkitLocation();
         if (location == null) {
@@ -164,7 +156,7 @@ public class PlayerCommand implements Listener {
         return true;
     }
 
-    private static boolean isFakePlayer(CommandContext<BukkitBrigadierCommandSource> ctx) {
+    private static boolean isFakePlayer(CommandContext<CommandListenerWrapper> ctx) {
         String playerName = StringArgumentType.getString(ctx, "player");
         Player player = Bukkit.getPlayerExact(playerName);
         if (player == null) return false;

@@ -8,6 +8,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.server.v1_16_R2.CommandListenerWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -20,12 +21,12 @@ import java.util.function.Predicate;
 
 public class BrigadierUtils {
 
-    public static LiteralArgumentBuilder<BukkitBrigadierCommandSource> literal(String literal) {
+    public static LiteralArgumentBuilder<CommandListenerWrapper> literal(String literal) {
         return LiteralArgumentBuilder.literal(literal);
     }
 
-    public static <T> RequiredArgumentBuilder<BukkitBrigadierCommandSource, T> argument(String name,
-                                                                                        ArgumentType<T> type) {
+    public static <T> RequiredArgumentBuilder<CommandListenerWrapper, T> argument(String name,
+                                                                                  ArgumentType<T> type) {
         return RequiredArgumentBuilder.argument(name, type);
     }
 
@@ -50,7 +51,7 @@ public class BrigadierUtils {
         return Collections.unmodifiableSet(players);
     }
 
-    public static Predicate<BukkitBrigadierCommandSource> hasPermission(String s) {
+    public static Predicate<CommandListenerWrapper> hasPermission(String s) {
         return (player) -> player.getBukkitSender().hasPermission(s);
     }
 }

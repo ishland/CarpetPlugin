@@ -4,9 +4,6 @@ main: com.ishland.bukkit.carpetplugin.CarpetPlugin
 api-version: "1.16"
 authors: [ishland]
 description: Partital implementation of Carpet Mod
-depend: [CommandAPI]
-commands:
-  player: {}
 permissions:
   carpet.player:
     description: "Access to player command"
@@ -16,8 +13,10 @@ permissions:
       - "carpet.player.kill"
   carpet.player.spawn:
     description: "Allow spawning fake players"
+    default: true
   carpet.player.spawn.whitelist:
     description: "Allow spawning fake whitelisted players"
     default: false
   carpet.player.kill:
     description: "Allow killing fake players"
+    default: true
