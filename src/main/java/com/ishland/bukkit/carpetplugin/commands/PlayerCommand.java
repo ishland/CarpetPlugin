@@ -17,10 +17,22 @@ import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Objects;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.*;
 
 public class PlayerCommand {
+
+    private static final ThreadPoolExecutor executor =
+            new ThreadPoolExecutor(
+                    1,
+                    Runtime.getRuntime().availableProcessors() * 16,
+                    60L,
+                    TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>());
+    ;
 
     public void register() {
         final CommandDispatcher<CommandListenerWrapper> commandDispatcher =
@@ -32,7 +44,11 @@ public class PlayerCommand {
                         .suggests((ctx, builder) -> suggestMatching(getPlayers(), builder))
                         .then(literal("spawn")
                                 .requires(hasPermission("carpet.player.spawn"))
-                                .executes(PlayerCommand::spawn)
+                                .executes(PlayerCommand::spawnAsync)
+                                .then(literal("sync")
+                                        .requires(hasPermission("carpet.player.spawn.sync"))
+                                        .executes(PlayerCommand::spawn)
+                                )
                         )
                         .then(literal("kill")
                                 .requires(hasPermission("carpet.player.kill"))
@@ -40,6 +56,15 @@ public class PlayerCommand {
                         )
                 )
         );
+    }
+
+    public void shutdown() {
+        executor.shutdownNow();
+        for (String playerName : getPlayers()) {
+            final Player playerExact = Bukkit.getPlayerExact(playerName);
+            if (playerExact != null)
+                playerExact.kickPlayer("Shutdown");
+        }
     }
 
     private static int kill(CommandContext<CommandListenerWrapper> ctx) {
@@ -55,6 +80,37 @@ public class PlayerCommand {
         assert bukkitPlayer != null;
         FakeEntityPlayer player = ((FakeEntityPlayer) bukkitPlayer.getHandle());
         player.killEntity();
+        return 1;
+    }
+
+    private static int spawnAsync(CommandContext<CommandListenerWrapper> ctx) {
+        String playerName = StringArgumentType.getString(ctx, "player");
+        Preconditions.checkNotNull(playerName);
+        Preconditions.checkArgument(!playerName.isEmpty());
+        if (playerName.length() > 40) {
+            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                    .append("Player name ").color(ChatColor.RED).append("").reset()
+                    .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
+                    .append(" is longer than 40 characters").color(ChatColor.RED).append("").reset()
+                    .create()
+            );
+            return 0;
+        }
+        final DedicatedServer server = ((CraftServer) Bukkit.getServer()).getHandle().getServer();
+        executor.execute(() -> {
+            if (server.getUserCache().getProfileIfCached(playerName) != null
+                    || server.getUserCache().getProfile(playerName) != null)
+                server.execute(() -> spawn(ctx));
+            else
+                ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                        .append("Player not found").color(ChatColor.RED).bold(true).append("").reset()
+                        .create()
+                );
+        });
+        ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                .append("Command queued, please wait... ").color(ChatColor.GREEN).bold(true).append("").reset()
+                .create()
+        );
         return 1;
     }
 
@@ -131,7 +187,8 @@ public class PlayerCommand {
 
         final DedicatedPlayerList playerList = ((CraftServer) Bukkit.getServer()).getHandle();
         final DedicatedServer server = playerList.getServer();
-        GameProfile profile = server.getUserCache().getProfile(playerName);
+        GameProfile profile = server.getUserCache().getProfileIfCached(playerName);
+        if (profile == null) profile = server.getUserCache().getProfile(playerName);
         if (playerList.getProfileBans().isBanned(profile)) {
             ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
                     .append("Player ").color(ChatColor.RED).append("").reset()

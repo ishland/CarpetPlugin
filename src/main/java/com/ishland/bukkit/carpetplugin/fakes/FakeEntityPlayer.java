@@ -44,7 +44,8 @@ public class FakeEntityPlayer extends EntityPlayer {
                                               EnumGamemode gameMode) {
         try {
             PlayerInteractManager interactManager = new PlayerInteractManager(world);
-            GameProfile gameProfile = server.getUserCache().getProfile(username);
+            GameProfile gameProfile = server.getUserCache().getProfileIfCached(username);
+            if(gameMode == null) gameProfile = server.getUserCache().getProfile(username);
             if (gameProfile == null) return null;
             if (gameProfile.getProperties().containsKey("textures")) {
                 try {
