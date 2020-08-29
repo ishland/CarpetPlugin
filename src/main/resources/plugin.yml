@@ -11,6 +11,7 @@ permissions:
     children:
       - "carpet.player.spawn"
       - "carpet.player.kill"
+      - "minecraft.command.player"
   carpet.player.spawn:
     description: "Allow spawning fake players"
     default: true
