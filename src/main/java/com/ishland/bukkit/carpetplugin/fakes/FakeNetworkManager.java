@@ -60,6 +60,14 @@ public class FakeNetworkManager extends NetworkManager {
         }
     }
 
+    /**
+     * For compatibility
+     */
+    @SuppressWarnings("unused")
+    public void dispatchPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> genericFutureListener) {
+        sendPacket(packet, genericFutureListener);
+    }
+
     @Override
     public void handleDisconnection() {
     }
