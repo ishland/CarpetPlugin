@@ -108,6 +108,7 @@ public class FakeEntityPlayer extends EntityPlayer {
             this.networkManager
                     .j() // getNetworkHandler
                     .a(new ChatMessage("Killed")); // onDisconnected
+            this.networkManager.channel.disconnect();
         }));
     }
 
