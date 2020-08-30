@@ -25,6 +25,7 @@ public class FakeNetworkManager extends NetworkManager {
 
     public FakeNetworkManager(EnumProtocolDirection enumprotocoldirection) {
         super(enumprotocoldirection);
+        this.preparing = false;
     }
 
     @Override

@@ -105,6 +105,7 @@ public class FakeEntityPlayer extends EntityPlayer {
     @Override
     public void killEntity() {
         this.server.a(new TickTask(this.server.ah(), () -> {
+            this.networkManager.channel.close();
             this.networkManager
                     .j() // getNetworkHandler
                     .a(new ChatMessage("Killed")); // onDisconnected
