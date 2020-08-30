@@ -119,11 +119,11 @@ public class PlayerCommand {
         String playerName = StringArgumentType.getString(ctx, "player");
         Preconditions.checkNotNull(playerName);
         Preconditions.checkArgument(!playerName.isEmpty());
-        if (playerName.length() > 40) {
+        if (playerName.length() > 16) {
             ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
                     .append("Player name ").color(ChatColor.RED).append("").reset()
                     .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
-                    .append(" is longer than 40 characters").color(ChatColor.RED).append("").reset()
+                    .append(" is longer than 16 characters").color(ChatColor.RED).append("").reset()
                     .create()
             );
             return 0;
