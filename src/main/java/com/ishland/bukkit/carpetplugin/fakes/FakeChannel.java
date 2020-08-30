@@ -5,6 +5,9 @@ import io.netty.channel.*;
 import java.net.SocketAddress;
 
 public class FakeChannel extends AbstractChannel {
+
+    private boolean isOpen = true;
+
     protected FakeChannel() {
         super(null);
     }
@@ -50,12 +53,12 @@ public class FakeChannel extends AbstractChannel {
 
     @Override
     protected void doDisconnect() {
-
+        isOpen = false;
     }
 
     @Override
     protected void doClose() {
-
+        isOpen = false;
     }
 
     @Override
@@ -75,12 +78,12 @@ public class FakeChannel extends AbstractChannel {
 
     @Override
     public boolean isOpen() {
-        return true;
+        return isOpen;
     }
 
     @Override
     public boolean isActive() {
-        return true;
+        return isOpen;
     }
 
     @Override
