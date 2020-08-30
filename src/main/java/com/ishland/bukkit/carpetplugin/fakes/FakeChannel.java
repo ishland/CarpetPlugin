@@ -90,4 +90,12 @@ public class FakeChannel extends AbstractChannel {
     public ChannelMetadata metadata() {
         return new ChannelMetadata(false);
     }
+
+    @Override
+    public ChannelFuture close() {
+        final DefaultChannelPromise promise = new DefaultChannelPromise(this);
+        doDisconnect();
+        promise.setSuccess();
+        return promise;
+    }
 }
