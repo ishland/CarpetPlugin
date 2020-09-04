@@ -70,10 +70,6 @@ public class FakeNetworkManager extends NetworkManager {
     }
 
     @Override
-    public void handleDisconnection() {
-    }
-
-    @Override
     public void stopReading() {
     }
 
