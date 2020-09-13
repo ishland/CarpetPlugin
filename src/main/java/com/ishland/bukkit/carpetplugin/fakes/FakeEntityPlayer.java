@@ -135,5 +135,4 @@ public class FakeEntityPlayer extends EntityPlayer {
         super.load(nbttagcompound);
         this.server.execute(fixStartingPosition);
     }
-
 }

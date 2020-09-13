@@ -93,9 +93,7 @@ public class FakeChannel extends AbstractChannel {
 
     @Override
     public ChannelFuture close() {
-        final DefaultChannelPromise promise = new DefaultChannelPromise(this);
         doDisconnect();
-        promise.setSuccess();
-        return promise;
+        return null;
     }
 }
