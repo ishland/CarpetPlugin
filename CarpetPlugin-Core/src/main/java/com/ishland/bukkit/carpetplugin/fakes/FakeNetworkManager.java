@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.*;
 
 import java.lang.reflect.Field;
 import java.net.SocketAddress;

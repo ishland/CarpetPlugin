@@ -1,6 +1,5 @@
 package com.ishland.bukkit.carpetplugin.utils;
 
-import com.destroystokyo.paper.brigadier.BukkitBrigadierCommandSource;
 import com.google.common.collect.Sets;
 import com.ishland.bukkit.carpetplugin.fakes.FakeEntityPlayer;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -8,9 +7,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.server.v1_16_R2.CommandListenerWrapper;
+import net.minecraft.server.CommandListenerWrapper;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;

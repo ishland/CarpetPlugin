@@ -1,1 +1,4 @@
 rootProject.name = 'CarpetPlugin'
+include 'Paper-Derelocate'
+include 'CarpetPlugin-Core'
+

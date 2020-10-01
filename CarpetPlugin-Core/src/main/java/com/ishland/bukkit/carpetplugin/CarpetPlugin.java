@@ -1,7 +1,6 @@
 package com.ishland.bukkit.carpetplugin;
 
 import com.ishland.bukkit.carpetplugin.commands.PlayerCommand;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class CarpetPlugin extends JavaPlugin {

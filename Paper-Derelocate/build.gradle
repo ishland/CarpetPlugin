@@ -1,0 +1,23 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'codemc-nms'
+        url = "https://repo.codemc.io/repository/nms/"
+    }
+}
+
+dependencies {
+    implementation "com.destroystokyo.paper:paper:${project.paper_version}"
+}
+
+assemble.dependsOn(shadowJar)
+
+shadowJar {
+    relocate "org.bukkit.craftbukkit.${project.nms_version}", "org.bukkit.craftbukkit"
+    relocate "net.minecraft.server.${project.nms_version}", "net.minecraft.server"
+}

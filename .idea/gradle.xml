@@ -10,6 +10,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/CarpetPlugin-Core" />
+            <option value="$PROJECT_DIR$/Paper-Derelocate" />
           </set>
         </option>
       </GradleProjectSettings>

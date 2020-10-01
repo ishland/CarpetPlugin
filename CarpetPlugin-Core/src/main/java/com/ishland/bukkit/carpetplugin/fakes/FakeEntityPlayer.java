@@ -3,9 +3,9 @@ package com.ishland.bukkit.carpetplugin.fakes;
 import com.google.common.base.Suppliers;
 import com.google.common.base.Throwables;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.*;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R2.CraftServer;
+import org.bukkit.craftbukkit.CraftServer;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -86,7 +86,7 @@ public class FakeEntityPlayer extends EntityPlayer {
                     new PacketPlayOutEntityTeleport(instance), world.getDimensionKey()
             );
             instance.getWorldServer().chunkProvider.movePlayer(instance);
-            instance.datawatcher.set(bi /* PLAYER_MODEL_PARTS */, (byte) 0x7f);
+            instance.datawatcher.set(EntityHuman.bi /* PLAYER_MODEL_PARTS */, (byte) 0x7f);
             return instance;
         } catch (Throwable t) {
             Throwables.throwIfUnchecked(t);

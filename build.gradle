@@ -1,6 +1,18 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-apply plugin: 'java'
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:6.0.0'
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'java'
+}
 
 group = 'com.ishland.bukkit'
 version = '0.1-SNAPSHOT'
@@ -8,28 +20,8 @@ version = '0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'papermc-repo'
-        url = 'https://papermc.io/repo/repository/maven-public/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
-    maven {
-        name = 'codemc-public'
-        url = "https://repo.codemc.org/repository/maven-public/"
-    }
-    maven {
-        name = 'codemc-nms'
-        url = "https://repo.codemc.io/repository/nms/"
-    }
-}
-
 dependencies {
-    compileOnly 'com.destroystokyo.paper:paper:1.16.3-R0.1-SNAPSHOT'
+    implementation project(":CarpetPlugin-Core")
 }
 
 processResources {
@@ -38,6 +30,9 @@ processResources {
     }
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 3, 'days'
+shadowJar {
+    relocate "org.bukkit.craftbukkit", "org.bukkit.craftbukkit.${project.nms_version}"
+    relocate "net.minecraft.server", "net.minecraft.server.${project.nms_version}"
 }
+
+assemble.dependsOn(shadowJar)

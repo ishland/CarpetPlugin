@@ -1,7 +1,7 @@
 package com.ishland.bukkit.carpetplugin.fakes;
 
 import com.google.common.base.Suppliers;
-import net.minecraft.server.v1_16_R2.*;
+import net.minecraft.server.*;
 
 import java.lang.reflect.Field;
 import java.util.function.Supplier;
