@@ -37,7 +37,13 @@ public class FakeEntityPlayerActionPack {
     }
 
     private void removeAll(ActionType type) {
-        activeActions.removeIf(action -> action.actionType == type);
+        activeActions.removeIf(action -> {
+            if(action.actionType == type){
+                action.deactivate();
+                return true;
+            }
+            return false;
+        });
     }
 
     public enum ActionType {
