@@ -1,4 +1,4 @@
-package com.ishland.bukkit.carpetplugin.fakes;
+package com.ishland.bukkit.carpetplugin.lib.fakeplayer.base;
 
 import io.netty.channel.*;
 

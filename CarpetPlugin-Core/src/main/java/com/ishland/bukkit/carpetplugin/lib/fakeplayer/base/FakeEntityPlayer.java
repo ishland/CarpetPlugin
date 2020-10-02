@@ -1,7 +1,8 @@
-package com.ishland.bukkit.carpetplugin.fakes;
+package com.ishland.bukkit.carpetplugin.lib.fakeplayer.base;
 
 import com.google.common.base.Suppliers;
 import com.google.common.base.Throwables;
+import com.ishland.bukkit.carpetplugin.lib.fakeplayer.action.FakeEntityPlayerActionPack;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.*;
 import org.bukkit.Bukkit;
@@ -28,6 +29,8 @@ public class FakeEntityPlayer extends EntityPlayer {
             throw new RuntimeException(t);
         }
     });
+
+    public final FakeEntityPlayerActionPack actionPack = new FakeEntityPlayerActionPack(this);
 
     public Runnable fixStartingPosition = () -> {
     };
@@ -117,7 +120,12 @@ public class FakeEntityPlayer extends EntityPlayer {
         if (this.server.ah()/* getTicks */ % 10 == 0) {
             ((PlayerConnection) this.networkManager.j()/* getNetworkHandler */).syncPosition();
             this.getWorldServer().chunkProvider.movePlayer(this);
+            if (fixStartingPosition != null) {
+                fixStartingPosition.run();
+                fixStartingPosition = null;
+            }
         }
+        actionPack.tick();
         super.tick();
         this.playerTick();
     }
@@ -128,12 +136,6 @@ public class FakeEntityPlayer extends EntityPlayer {
         setHealth(20.0F);
         this.foodData = new FoodMetaData(this);
         killEntity();
-    }
-
-    @Override
-    public void load(NBTTagCompound nbttagcompound) {
-        super.load(nbttagcompound);
-        this.server.execute(fixStartingPosition);
     }
 
 }

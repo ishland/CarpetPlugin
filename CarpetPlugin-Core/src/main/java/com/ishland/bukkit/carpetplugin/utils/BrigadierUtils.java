@@ -1,7 +1,7 @@
 package com.ishland.bukkit.carpetplugin.utils;
 
 import com.google.common.collect.Sets;
-import com.ishland.bukkit.carpetplugin.fakes.FakeEntityPlayer;
+import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;

@@ -1,7 +1,8 @@
 package com.ishland.bukkit.carpetplugin.commands;
 
 import com.google.common.base.Preconditions;
-import com.ishland.bukkit.carpetplugin.fakes.FakeEntityPlayer;
+import com.ishland.bukkit.carpetplugin.lib.fakeplayer.action.FakeEntityPlayerActionPack;
+import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.*;
 
@@ -54,8 +56,36 @@ public class PlayerCommand {
                                 .requires(hasPermission("carpet.player.kill"))
                                 .executes(PlayerCommand::kill)
                         )
+                        .then(literal("sneak")
+                                .requires(hasPermission("carpet.player.sneak"))
+                                .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::doSneak))
+                        )
+                        .then(literal("unsneak")
+                                .requires(hasPermission("carpet.player.sneak"))
+                                .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::unSneak))
+                        )
                 )
         );
+    }
+
+    private static int manipulate(CommandContext<CommandListenerWrapper> ctx, Consumer<FakeEntityPlayerActionPack> consumer) {
+        if (!isFakePlayer(ctx)) {
+            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                    .append("Only fake players can manipulate").color(ChatColor.RED).append("").reset()
+                    .create()
+            );
+            return 0;
+        }
+        FakeEntityPlayer player = getFakeEntityPlayer(ctx);
+        consumer.accept(player.actionPack);
+        return 1;
+    }
+
+    private static FakeEntityPlayer getFakeEntityPlayer(CommandContext<CommandListenerWrapper> ctx) {
+        String playerName = StringArgumentType.getString(ctx, "player");
+        final CraftPlayer bukkitPlayer = (CraftPlayer) Bukkit.getPlayerExact(playerName);
+        assert bukkitPlayer != null;
+        return (FakeEntityPlayer) bukkitPlayer.getHandle();
     }
 
     public void shutdown() {
@@ -75,10 +105,7 @@ public class PlayerCommand {
             );
             return 0;
         }
-        String playerName = StringArgumentType.getString(ctx, "player");
-        final CraftPlayer bukkitPlayer = (CraftPlayer) Bukkit.getPlayerExact(playerName);
-        assert bukkitPlayer != null;
-        FakeEntityPlayer player = ((FakeEntityPlayer) bukkitPlayer.getHandle());
+        FakeEntityPlayer player = getFakeEntityPlayer(ctx);
         player.killEntity();
         return 1;
     }
