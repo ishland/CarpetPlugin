@@ -2,6 +2,7 @@ package com.ishland.bukkit.carpetplugin.lib.fakeplayer.action;
 
 import com.google.common.base.Preconditions;
 import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
+import net.minecraft.server.*;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,6 +61,20 @@ public class FakeEntityPlayerActionPack {
         removeAll(ActionType.SPRINT);
     }
 
+    public void doUse() {
+        unUse();
+        activeActions.add(new Action(ActionType.USE, fakeEntityPlayer));
+    }
+
+    public void doUse(int interval, int repeats){
+        unUse();
+        activeActions.add(new Action(ActionType.USE, fakeEntityPlayer, interval, repeats));
+    }
+
+    public void unUse() {
+        removeAll(ActionType.USE);
+    }
+
     private void removeAll(ActionType type) {
         activeActions.removeIf(action -> {
             if (action.actionType == type) {
@@ -94,6 +109,44 @@ public class FakeEntityPlayerActionPack {
             public void deactivate(FakeEntityPlayer player) {
                 player.setSprinting(false);
             }
+        },
+        USE() {
+            @Override
+            public void tick(FakeEntityPlayer player) {
+                MovingObjectPosition rayTraceResult = player.getRayTrace(5, RayTrace.FluidCollisionOption.NONE);
+                if (rayTraceResult instanceof MovingObjectPositionBlock) {
+                    MovingObjectPositionBlock blockRayTraceResult = (MovingObjectPositionBlock) rayTraceResult;
+                    WorldServer world = player.getWorldServer();
+                    BlockPosition blockPosition = blockRayTraceResult.getBlockPosition();
+                    EnumDirection direction = blockRayTraceResult.getDirection();
+                    if (blockPosition.getY() < player.server.getMaxBuildHeight() - (direction == EnumDirection.UP ? 1 : 0)
+                            && world.a/* canPlayerModifyAt */(player, blockPosition))
+                        for (EnumHand hand : EnumHand.values())
+                            if (player.playerInteractManager.a(player, world, player.getItemInHand(hand),
+                                    hand, blockRayTraceResult) == EnumInteractionResult.SUCCESS) {
+                                player.swingHand(hand);
+                                return;
+                            }
+                } else if (rayTraceResult instanceof MovingObjectPositionEntity) {
+                    MovingObjectPositionEntity entityRayTraceResult = (MovingObjectPositionEntity) rayTraceResult;
+                    Entity hitEntity = entityRayTraceResult.getEntity();
+                    Vec3D relativeHitPos = entityRayTraceResult.getPos()
+                            .a/* subtract */(hitEntity.locX(), hitEntity.locY(), hitEntity.locZ());
+                    for (EnumHand hand : EnumHand.values()) {
+                        if (hitEntity.a(player, relativeHitPos, hand) == EnumInteractionResult.SUCCESS) return;
+                        if (player.a(hitEntity, hand) == EnumInteractionResult.SUCCESS) return;
+                    }
+                }
+                for (EnumHand hand : EnumHand.values())
+                    if (player.playerInteractManager.a(player, player.getWorldServer(),
+                            player.getItemInHand(hand), hand) == EnumInteractionResult.SUCCESS)
+                        return;
+            }
+
+            @Override
+            public void deactivate(FakeEntityPlayer player) {
+                player.releaseActiveItem();
+            }
         };
 
         public abstract void tick(FakeEntityPlayer player);
@@ -111,16 +164,15 @@ public class FakeEntityPlayerActionPack {
         public final int repeats;
 
         private boolean isExecuted = false;
-        private long ticks = 0L;
+        private long ticks = -1L;
 
-        public Action(ActionType actionType, FakeEntityPlayer player, int delay) {
+        public Action(ActionType actionType, FakeEntityPlayer player) {
             Preconditions.checkNotNull(actionType);
             Preconditions.checkNotNull(player);
-            Preconditions.checkArgument(delay > 0);
             this.actionType = actionType;
             this.player = player;
             this.isOnce = true;
-            this.interval = delay;
+            this.interval = 1;
             this.repeats = 1;
         }
 

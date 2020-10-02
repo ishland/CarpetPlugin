@@ -6,6 +6,7 @@ import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -91,6 +92,24 @@ public class PlayerCommand {
                                         .then(literal("direction").then(argument("direction", ArgumentRotation.a())
                                                 .executes(PlayerCommand::lookAtDirection)
                                         ))
+                                )
+                        )
+                        .then(literal("use")
+                                .requires(hasPermission("carpet.player.use"))
+                                .then(literal("once")
+                                        .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::doUse))
+                                )
+                                .then(literal("continuous")
+                                        .then(argument("interval", IntegerArgumentType.integer(1))
+                                                .then(argument("repeats", IntegerArgumentType.integer(1))
+                                                        .executes((ctx) -> manipulate(ctx, ap -> ap.doUse(
+                                                                IntegerArgumentType.getInteger(ctx, "interval"),
+                                                                IntegerArgumentType.getInteger(ctx, "repeats")
+                                                                ))
+                                                        )
+                                                )
+                                        )
+                                        .executes((ctx) -> manipulate(ctx, ap -> ap.doUse(1, 1)))
                                 )
                         )
                 )
