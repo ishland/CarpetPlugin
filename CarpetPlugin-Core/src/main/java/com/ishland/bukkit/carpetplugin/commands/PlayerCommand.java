@@ -5,8 +5,10 @@ import com.ishland.bukkit.carpetplugin.lib.fakeplayer.action.FakeEntityPlayerAct
 import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.minecraft.server.*;
@@ -80,8 +82,36 @@ public class PlayerCommand {
                                 .requires(hasPermission("carpet.player.sprint"))
                                 .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::unSprint))
                         )
+                        .then(literal("look")
+                                .requires(hasPermission("carpet.player.look"))
+                                .then(literal("at")
+                                        .then(literal("block").then(argument("blockpos", ArgumentVec3.a())
+                                                .executes(PlayerCommand::lookAtBlock)
+                                        ))
+                                        .then(literal("direction").then(argument("direction", ArgumentRotation.a())
+                                                .executes(PlayerCommand::lookAtDirection)
+                                        ))
+                                )
+                        )
                 )
         );
+    }
+
+    private static int lookAtDirection(CommandContext<CommandListenerWrapper> ctx) {
+        return manipulate(ctx, ap -> {
+            Vec2F rotation = ArgumentRotation.a(ctx, "direction").b(ctx.getSource());
+            ap.fakeEntityPlayer.yaw = rotation.j;
+            ap.fakeEntityPlayer.pitch = rotation.i;
+        });
+    }
+
+    private static int lookAtBlock(CommandContext<CommandListenerWrapper> ctx) {
+        return manipulate(ctx, ap -> {
+            try {
+                ap.fakeEntityPlayer.a/* lookAt */(ArgumentAnchor.Anchor.EYES, ArgumentVec3.a(ctx, "blockpos"));
+            } catch (CommandSyntaxException ignored) {
+            }
+        });
     }
 
     private static int actions(CommandContext<CommandListenerWrapper> ctx) {
@@ -90,7 +120,7 @@ public class PlayerCommand {
                     .append("Activated actions: ").color(ChatColor.GOLD)
                     .create()
             );
-            for(FakeEntityPlayerActionPack.Action action: ap.getActivatedActions())
+            for (FakeEntityPlayerActionPack.Action action : ap.getActivatedActions())
                 ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
                         .append(action.toString()).color(ChatColor.AQUA)
                         .create()

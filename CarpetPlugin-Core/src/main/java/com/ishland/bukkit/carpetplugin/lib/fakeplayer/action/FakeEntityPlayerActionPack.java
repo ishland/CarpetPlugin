@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class FakeEntityPlayerActionPack {
 
-    private final FakeEntityPlayer fakeEntityPlayer;
+    public final FakeEntityPlayer fakeEntityPlayer;
     private final Set<Action> activeActions = new HashSet<>();
 
     public FakeEntityPlayerActionPack(FakeEntityPlayer fakeEntityPlayer) {

@@ -15,6 +15,7 @@ permissions:
       - "carpet.player.sneak"
       - "carpet.player.stop"
       - "carpet.player.actions"
+      - "carpet.player.look"
   carpet.player.spawn:
     description: "Allow spawning fake players"
     default: true
@@ -34,4 +35,7 @@ permissions:
     default: true
   carpet.player.actions:
     description: "Allow getting fake players current active actions"
+    default: true
+  carpet.player.look:
+    description: "Allow fake players look somewhere"
     default: true
