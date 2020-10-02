@@ -189,7 +189,8 @@ public class PlayerCommand {
         final WorldServer worldServer =
                 ((CraftWorld) Objects.requireNonNull(ctx.getSource().getBukkitLocation()).getWorld()).getHandle();
         EnumGamemode gameMode = EnumGamemode.SURVIVAL;
-        Location location = ctx.getSource().getBukkitLocation();
+        Vec3D location = ctx.getSource().getPosition();
+        Vec2F rotation = ctx.getSource().i();
         assert location != null;
         FakeEntityPlayer entityPlayer = FakeEntityPlayer.createFake(
                 playerName,
@@ -197,8 +198,8 @@ public class PlayerCommand {
                 location.getX(),
                 location.getY(),
                 location.getZ(),
-                location.getYaw(),
-                location.getPitch(),
+                rotation.j,
+                rotation.i,
                 worldServer,
                 gameMode);
         if (entityPlayer == null) {

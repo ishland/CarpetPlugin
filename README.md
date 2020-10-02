@@ -13,6 +13,12 @@ Backward and forward support is extremely difficult, and I won't do that.
 ## Implemented features
 - /player ... spawn (carpet.player.spawn) (carpet.player.spawn.whitelist)
 - /player ... kill (carpet.player.kill)
+- /player ... sprint (carpet.player.sprint)
+- /player ... unsprint (carpet.player.sprint)
+- /player ... sneak (carpet.player.speak)
+- /player ... unsneak (carpet.player.sneak)
+- /player ... stop (carpet.player.stop)
+- /player ... actions (carpet.player.actions)
 
 ## Copyright notice
 Most of the logics of this plugin comes from [fabric-carpet](https://github.com/gnembon/fabric-carpet)
