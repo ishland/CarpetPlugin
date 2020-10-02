@@ -1,0 +1,29 @@
+name: CarpetPlugin
+version: @version@
+main: com.ishland.bukkit.carpetplugin.CarpetPlugin
+api-version: "1.16"
+authors: [ishland]
+description: Partital implementation of Carpet Mod
+permissions:
+  carpet.player:
+    description: "Access to player command"
+    default: true
+    children:
+      - "carpet.player.spawn"
+      - "carpet.player.kill"
+      - "minecraft.command.player"
+      - "carpet.player.sneak"
+  carpet.player.spawn:
+    description: "Allow spawning fake players"
+    default: true
+  carpet.player.spawn.whitelist:
+    description: "Allow spawning fake whitelisted players"
+    default: false
+  carpet.player.spawn.sync:
+    description: "Allow spawning fake players synchronized"
+  carpet.player.kill:
+    description: "Allow killing fake players"
+    default: true
+  carpet.player.sneak:
+    description: "Allow sneaking fake players"
+    default: true
