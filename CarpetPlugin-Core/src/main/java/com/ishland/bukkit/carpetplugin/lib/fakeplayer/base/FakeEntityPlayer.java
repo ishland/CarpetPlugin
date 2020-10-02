@@ -32,8 +32,7 @@ public class FakeEntityPlayer extends EntityPlayer {
 
     public final FakeEntityPlayerActionPack actionPack = new FakeEntityPlayerActionPack(this);
 
-    public Runnable fixStartingPosition = () -> {
-    };
+    public Runnable fixStartingPosition = null;
 
     @Nullable
     public static FakeEntityPlayer createFake(String username,
@@ -58,7 +57,7 @@ public class FakeEntityPlayer extends EntityPlayer {
                 }
             }
             FakeEntityPlayer instance = new FakeEntityPlayer(server, world, gameProfile, interactManager);
-            instance.fixStartingPosition = () -> instance.setLocation(x, y, z, yaw, pitch);
+            instance.fixStartingPosition = () -> instance.a(world, x, y, z, yaw, pitch);
             final FakeNetworkManager networkManager = new FakeNetworkManager(EnumProtocolDirection.SERVERBOUND);
 
             // Additional things to get networkManager ticking
