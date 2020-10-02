@@ -27,6 +27,19 @@ public class FakeEntityPlayerActionPack {
         }
     }
 
+    public Set<Action> getActivatedActions() {
+        return activeActions;
+    }
+
+    public void stopAll() {
+        Iterator<Action> iterator = activeActions.iterator();
+        while (iterator.hasNext()) {
+            Action action = iterator.next();
+            action.deactivate();
+            iterator.remove();
+        }
+    }
+
     public void doSneak() {
         unSneak();
         unSprint(); // Conflict with sprint
@@ -155,6 +168,19 @@ public class FakeEntityPlayerActionPack {
         @Override
         public int hashCode() {
             return Objects.hash(actionType, player, isOnce, interval, repeats);
+        }
+
+        @Override
+        public String toString() {
+            return "Action{" +
+                    "actionType=" + actionType +
+                    ", player=" + player +
+                    ", isOnce=" + isOnce +
+                    ", interval=" + interval +
+                    ", repeats=" + repeats +
+                    ", isExecuted=" + isExecuted +
+                    ", ticks=" + ticks +
+                    '}';
         }
     }
 

@@ -13,6 +13,8 @@ permissions:
       - "carpet.player.kill"
       - "minecraft.command.player"
       - "carpet.player.sneak"
+      - "carpet.player.stop"
+      - "carpet.player.actions"
   carpet.player.spawn:
     description: "Allow spawning fake players"
     default: true
@@ -26,4 +28,10 @@ permissions:
     default: true
   carpet.player.sneak:
     description: "Allow sneaking fake players"
+    default: true
+  carpet.player.stop:
+    description: "Allow stopping fake players"
+    default: true
+  carpet.player.actions:
+    description: "Allow getting fake players current active actions"
     default: true

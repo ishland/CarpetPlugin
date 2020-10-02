@@ -56,6 +56,14 @@ public class PlayerCommand {
                                 .requires(hasPermission("carpet.player.kill"))
                                 .executes(PlayerCommand::kill)
                         )
+                        .then(literal("stop")
+                                .requires(hasPermission("carpet.player.stop"))
+                                .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::stopAll))
+                        )
+                        .then(literal("actions")
+                                .requires(hasPermission("carpet.player.actions"))
+                                .executes(PlayerCommand::actions)
+                        )
                         .then(literal("sneak")
                                 .requires(hasPermission("carpet.player.sneak"))
                                 .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::doSneak))
@@ -74,6 +82,20 @@ public class PlayerCommand {
                         )
                 )
         );
+    }
+
+    private static int actions(CommandContext<CommandListenerWrapper> ctx) {
+        return manipulate(ctx, ap -> {
+            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                    .append("Activated actions: ").color(ChatColor.GOLD)
+                    .create()
+            );
+            for(FakeEntityPlayerActionPack.Action action: ap.getActivatedActions())
+                ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                        .append(action.toString()).color(ChatColor.AQUA)
+                        .create()
+                );
+        });
     }
 
     private static int manipulate(CommandContext<CommandListenerWrapper> ctx, Consumer<FakeEntityPlayerActionPack> consumer) {
