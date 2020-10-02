@@ -64,6 +64,14 @@ public class PlayerCommand {
                                 .requires(hasPermission("carpet.player.sneak"))
                                 .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::unSneak))
                         )
+                        .then(literal("sprint")
+                                .requires(hasPermission("carpet.player.sprint"))
+                                .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::doSprint))
+                        )
+                        .then(literal("unsprint")
+                                .requires(hasPermission("carpet.player.sprint"))
+                                .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::unSprint))
+                        )
                 )
         );
     }

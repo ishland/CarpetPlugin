@@ -29,6 +29,7 @@ public class FakeEntityPlayerActionPack {
 
     public void doSneak() {
         unSneak();
+        unSprint(); // Conflict with sprint
         activeActions.add(new Action(ActionType.SNEAK, fakeEntityPlayer, 5, 1));
     }
 
@@ -36,9 +37,19 @@ public class FakeEntityPlayerActionPack {
         removeAll(ActionType.SNEAK);
     }
 
+    public void doSprint() {
+        unSprint();
+        unSneak(); // Conflict with sneak
+        activeActions.add(new Action(ActionType.SPRINT, fakeEntityPlayer, 5, 1));
+    }
+
+    public void unSprint() {
+        removeAll(ActionType.SPRINT);
+    }
+
     private void removeAll(ActionType type) {
         activeActions.removeIf(action -> {
-            if(action.actionType == type){
+            if (action.actionType == type) {
                 action.deactivate();
                 return true;
             }
@@ -57,6 +68,18 @@ public class FakeEntityPlayerActionPack {
             @Override
             public void deactivate(FakeEntityPlayer player) {
                 player.setSneaking(false);
+            }
+        },
+        SPRINT() {
+            @Override
+            public void tick(FakeEntityPlayer player) {
+                if (!player.isSprinting())
+                    player.setSprinting(true);
+            }
+
+            @Override
+            public void deactivate(FakeEntityPlayer player) {
+                player.setSprinting(false);
             }
         };
 
