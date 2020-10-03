@@ -7,6 +7,7 @@ import net.minecraft.server.Entity;
 import net.minecraft.server.EnumDirection;
 import net.minecraft.server.EnumHand;
 import net.minecraft.server.EnumInteractionResult;
+import net.minecraft.server.ItemStack;
 import net.minecraft.server.MovingObjectPosition;
 import net.minecraft.server.MovingObjectPositionBlock;
 import net.minecraft.server.MovingObjectPositionEntity;
@@ -16,6 +17,7 @@ import net.minecraft.server.WorldServer;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -219,7 +221,19 @@ public class FakeEntityPlayerActionPack {
         DROP_ALL() {
             @Override
             public void tick(FakeEntityPlayer player) {
-                player.inventory.dropContents();
+                dropList(player, player.inventory.armor);
+                dropList(player, player.inventory.items);
+                dropList(player, player.inventory.extraSlots);
+            }
+
+            private void dropList(FakeEntityPlayer player, List<ItemStack> list) {
+                for(int i = 0; i < list.size(); ++i) {
+                    ItemStack itemstack = list.get(i);
+                    if (!itemstack.isEmpty()) {
+                        player.a(itemstack, false, true);
+                        list.set(i, ItemStack.b);
+                    }
+                }
             }
 
             @Override
