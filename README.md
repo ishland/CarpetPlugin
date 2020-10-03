@@ -1,5 +1,7 @@
 # CarpetPlugin
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/32e8b01100ad420b92f0fb704fd02eba)](https://app.codacy.com/gh/ishlandbukkit/CarpetPlugin?utm_source=github.com&utm_medium=referral&utm_content=ishlandbukkit/CarpetPlugin&utm_campaign=Badge_Grade_Settings)
+
 Carpets can also be made of Paper!  
 A bukkit plugin aims to implement as many features as [fabric-carpet](https://github.com/gnembon/fabric-carpet) does.  
 This is the [Paper](http://papermc.io/) version of Carpet Mod, for Minecraft 1.16.2.  
