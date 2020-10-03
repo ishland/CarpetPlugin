@@ -85,6 +85,42 @@ public class FakeEntityPlayerActionPack {
         removeAll(ActionType.USE);
     }
 
+    public void dropOne() {
+        unDrop();
+        activeActions.add(new Action(ActionType.DROP_ONE, fakeEntityPlayer));
+    }
+
+    public void dropOne(int interval, int repeats) {
+        unDrop();
+        activeActions.add(new Action(ActionType.DROP_ONE, fakeEntityPlayer, interval, repeats));
+    }
+
+    public void dropStack() {
+        unDrop();
+        activeActions.add(new Action(ActionType.DROP_STACK, fakeEntityPlayer));
+    }
+
+    public void dropStack(int interval, int repeats) {
+        unDrop();
+        activeActions.add(new Action(ActionType.DROP_STACK, fakeEntityPlayer, interval, repeats));
+    }
+
+    public void dropAll() {
+        unDrop();
+        activeActions.add(new Action(ActionType.DROP_ALL, fakeEntityPlayer));
+    }
+
+    public void dropAll(int interval, int repeats) {
+        unDrop();
+        activeActions.add(new Action(ActionType.DROP_ALL, fakeEntityPlayer, interval, repeats));
+    }
+
+    public void unDrop() {
+        removeAll(ActionType.DROP_ALL);
+        removeAll(ActionType.DROP_ONE);
+        removeAll(ActionType.DROP_STACK);
+    }
+
     private void removeAll(ActionType type) {
         activeActions.removeIf(action -> {
             if (action.actionType == type) {
@@ -156,6 +192,39 @@ public class FakeEntityPlayerActionPack {
             @Override
             public void deactivate(FakeEntityPlayer player) {
                 player.releaseActiveItem();
+            }
+        },
+        DROP_ONE() {
+            @Override
+            public void tick(FakeEntityPlayer player) {
+                player.dropItem(false);
+            }
+
+            @Override
+            public void deactivate(FakeEntityPlayer player) {
+
+            }
+        },
+        DROP_STACK() {
+            @Override
+            public void tick(FakeEntityPlayer player) {
+                player.dropItem(true);
+            }
+
+            @Override
+            public void deactivate(FakeEntityPlayer player) {
+
+            }
+        },
+        DROP_ALL() {
+            @Override
+            public void tick(FakeEntityPlayer player) {
+                player.inventory.dropContents();
+            }
+
+            @Override
+            public void deactivate(FakeEntityPlayer player) {
+
             }
         };
 

@@ -150,9 +150,11 @@ public class FakeEntityPlayer extends EntityPlayer {
     @Override
     public void die(DamageSource damagesource) {
         super.die(damagesource);
-        setHealth(20.0F);
-        this.foodData = new FoodMetaData(this);
-        killEntity();
+        this.server.execute(() -> {
+            setHealth(20.0F);
+            this.foodData = new FoodMetaData(this);
+            killEntity();
+        });
     }
 
 }

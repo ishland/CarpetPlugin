@@ -123,6 +123,60 @@ public class PlayerCommand {
                                         .executes((ctx) -> manipulate(ctx, ap -> ap.doUse(1, 1)))
                                 )
                         )
+                        .then(literal("drop")
+                                .requires(hasPermission("carpet.player.drop"))
+                                .then(literal("once")
+                                        .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::dropOne))
+                                )
+                                .then(literal("continuous")
+                                        .then(argument("interval", IntegerArgumentType.integer(1))
+                                                .then(argument("repeats", IntegerArgumentType.integer(1))
+                                                        .executes((ctx) -> manipulate(ctx, ap -> ap.dropOne(
+                                                                IntegerArgumentType.getInteger(ctx, "interval"),
+                                                                IntegerArgumentType.getInteger(ctx, "repeats")
+                                                                ))
+                                                        )
+                                                )
+                                        )
+                                        .executes((ctx) -> manipulate(ctx, ap -> ap.doUse(1, 1)))
+                                )
+                        )
+                        .then(literal("dropStack")
+                                .requires(hasPermission("carpet.player.drop"))
+                                .then(literal("once")
+                                        .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::dropStack))
+                                )
+                                .then(literal("continuous")
+                                        .then(argument("interval", IntegerArgumentType.integer(1))
+                                                .then(argument("repeats", IntegerArgumentType.integer(1))
+                                                        .executes((ctx) -> manipulate(ctx, ap -> ap.dropStack(
+                                                                IntegerArgumentType.getInteger(ctx, "interval"),
+                                                                IntegerArgumentType.getInteger(ctx, "repeats")
+                                                                ))
+                                                        )
+                                                )
+                                        )
+                                        .executes((ctx) -> manipulate(ctx, ap -> ap.doUse(1, 1)))
+                                )
+                        )
+                        .then(literal("dropAll")
+                                .requires(hasPermission("carpet.player.drop"))
+                                .then(literal("once")
+                                        .executes((ctx) -> manipulate(ctx, FakeEntityPlayerActionPack::dropAll))
+                                )
+                                .then(literal("continuous")
+                                        .then(argument("interval", IntegerArgumentType.integer(1))
+                                                .then(argument("repeats", IntegerArgumentType.integer(1))
+                                                        .executes((ctx) -> manipulate(ctx, ap -> ap.dropAll(
+                                                                IntegerArgumentType.getInteger(ctx, "interval"),
+                                                                IntegerArgumentType.getInteger(ctx, "repeats")
+                                                                ))
+                                                        )
+                                                )
+                                        )
+                                        .executes((ctx) -> manipulate(ctx, ap -> ap.doUse(1, 1)))
+                                )
+                        )
                 )
         );
     }
@@ -331,6 +385,7 @@ public class PlayerCommand {
         return true;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean isFakePlayer(CommandContext<CommandListenerWrapper> ctx) {
         String playerName = StringArgumentType.getString(ctx, "player");
         Player player = Bukkit.getPlayerExact(playerName);
