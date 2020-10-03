@@ -38,6 +38,7 @@ import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.argument;
 import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.getPlayers;
 import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.hasPermission;
 import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.literal;
+import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.sendMessage;
 import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.suggestMatching;
 
 public class PlayerCommand {
@@ -200,12 +201,12 @@ public class PlayerCommand {
 
     private static int actions(CommandContext<CommandListenerWrapper> ctx) {
         return manipulate(ctx, ap -> {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Activated actions: ").color(ChatColor.GOLD)
                     .create()
             );
             for (FakeEntityPlayerActionPack.Action action : ap.getActivatedActions())
-                ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                sendMessage(ctx, new ComponentBuilder()
                         .append(action.toString()).color(ChatColor.AQUA)
                         .create()
                 );
@@ -214,7 +215,7 @@ public class PlayerCommand {
 
     private static int manipulate(CommandContext<CommandListenerWrapper> ctx, Consumer<FakeEntityPlayerActionPack> consumer) {
         if (!isFakePlayer(ctx)) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Only fake players can manipulate").color(ChatColor.RED).append("").reset()
                     .create()
             );
@@ -243,7 +244,7 @@ public class PlayerCommand {
 
     private static int kill(CommandContext<CommandListenerWrapper> ctx) {
         if (!isFakePlayer(ctx)) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Only fake players can be killed").color(ChatColor.RED).append("").reset()
                     .create()
             );
@@ -259,7 +260,7 @@ public class PlayerCommand {
         Preconditions.checkNotNull(playerName);
         Preconditions.checkArgument(!playerName.isEmpty());
         if (playerName.length() > 40) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Player name ").color(ChatColor.RED).append("").reset()
                     .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
                     .append(" is longer than 40 characters").color(ChatColor.RED).append("").reset()
@@ -273,12 +274,12 @@ public class PlayerCommand {
                     || server.getUserCache().getProfile(playerName) != null)
                 server.execute(() -> spawn(ctx));
             else
-                ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+                sendMessage(ctx, new ComponentBuilder()
                         .append("Player not found").color(ChatColor.RED).bold(true).append("").reset()
                         .create()
                 );
         });
-        ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+        sendMessage(ctx, new ComponentBuilder()
                 .append("Command queued, please wait... ").color(ChatColor.GREEN).bold(true).append("").reset()
                 .create()
         );
@@ -291,7 +292,7 @@ public class PlayerCommand {
         Preconditions.checkNotNull(playerName);
         Preconditions.checkArgument(!playerName.isEmpty());
         if (playerName.length() > 16) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Player name ").color(ChatColor.RED).append("").reset()
                     .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
                     .append(" is longer than 16 characters").color(ChatColor.RED).append("").reset()
@@ -317,17 +318,17 @@ public class PlayerCommand {
                 worldServer,
                 gameMode);
         if (entityPlayer == null) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Player ").color(ChatColor.RED).append("").reset()
                     .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
                     .append(" cannot get spawned").color(ChatColor.RED).append("").reset()
                     .create()
             );
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Possible problems: ").color(ChatColor.RED).append("").reset()
                     .create()
             );
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("1. Player doesn't exists and cannot spawn in online mode. ").color(ChatColor.RED).append("").reset()
                     .create()
             );
@@ -340,7 +341,7 @@ public class PlayerCommand {
         String playerName = StringArgumentType.getString(ctx, "player");
         final Location location = ctx.getSource().getBukkitLocation();
         if (location == null) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Player can only spawned with location").color(ChatColor.RED).append("").reset()
                     .create()
             );
@@ -348,7 +349,7 @@ public class PlayerCommand {
         }
         final Player player = Bukkit.getPlayerExact(playerName);
         if (player != null) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Player ").color(ChatColor.RED).append("").reset()
                     .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
                     .append(" is already logged on").color(ChatColor.RED).append("").reset()
@@ -362,7 +363,7 @@ public class PlayerCommand {
         GameProfile profile = server.getUserCache().getProfileIfCached(playerName);
         if (profile == null) profile = server.getUserCache().getProfile(playerName);
         if (playerList.getProfileBans().isBanned(profile)) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Player ").color(ChatColor.RED).append("").reset()
                     .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
                     .append(" is banned").color(ChatColor.RED).append("").reset()
@@ -373,7 +374,7 @@ public class PlayerCommand {
 
         if (playerList.getHasWhitelist() && profile != null && playerList.isWhitelisted(profile)
                 && !ctx.getSource().getBukkitSender().hasPermission("carpet.player.spawn.whitelist")) {
-            ctx.getSource().getBukkitSender().sendMessage(new ComponentBuilder()
+            sendMessage(ctx, new ComponentBuilder()
                     .append("Player ").color(ChatColor.RED).append("").reset()
                     .append(playerName).color(ChatColor.RED).bold(true).append("").reset()
                     .append(" is whitelisted and insufficient permission").color(ChatColor.RED).append("").reset()

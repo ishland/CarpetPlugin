@@ -5,12 +5,16 @@ import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.ChatMessage;
 import net.minecraft.server.CommandListenerWrapper;
+import net.minecraft.server.EntityPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.entity.Player;
+import org.bukkit.craftbukkit.CraftServer;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -44,13 +48,17 @@ public class BrigadierUtils {
 
     public static Set<String> getPlayers() {
         Set<String> players = Sets.newHashSet("Steve", "Alex");
-        for (Player player : Bukkit.getOnlinePlayers())
-            if (((CraftPlayer) player).getHandle() instanceof FakeEntityPlayer)
+        for (EntityPlayer player : ((CraftServer) Bukkit.getServer()).getServer().getPlayerList().getPlayers())
+            if (player instanceof FakeEntityPlayer)
                 players.add(player.getName());
         return Collections.unmodifiableSet(players);
     }
 
     public static Predicate<CommandListenerWrapper> hasPermission(String s) {
         return (player) -> player.getBukkitSender().hasPermission(s);
+    }
+
+    public static void sendMessage(CommandContext<CommandListenerWrapper> ctx, BaseComponent... components) {
+        ctx.getSource().sendMessage(new ChatMessage(new TextComponent(components).toLegacyText()), false);
     }
 }
