@@ -139,7 +139,7 @@ public class PlayerCommand {
                                                         )
                                                 )
                                         )
-                                        .executes((ctx) -> manipulate(ctx, ap -> ap.dropAll(1, 1)))
+                                        .executes((ctx) -> manipulate(ctx, ap -> ap.dropOne(1, 1)))
                                 )
                         )
                         .then(literal("dropStack")
