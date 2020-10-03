@@ -4,7 +4,25 @@ import com.google.common.base.Suppliers;
 import com.google.common.base.Throwables;
 import com.ishland.bukkit.carpetplugin.lib.fakeplayer.action.FakeEntityPlayerActionPack;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.server.*;
+import net.minecraft.server.ChatMessage;
+import net.minecraft.server.CrashReport;
+import net.minecraft.server.DamageSource;
+import net.minecraft.server.EntityHuman;
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.EnumGamemode;
+import net.minecraft.server.EnumProtocolDirection;
+import net.minecraft.server.FoodMetaData;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.NetworkManager;
+import net.minecraft.server.PacketPlayOutEntityHeadRotation;
+import net.minecraft.server.PacketPlayOutEntityTeleport;
+import net.minecraft.server.PlayerConnection;
+import net.minecraft.server.PlayerInteractManager;
+import net.minecraft.server.ReportedException;
+import net.minecraft.server.ServerConnection;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.TileEntitySkull;
+import net.minecraft.server.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 
@@ -47,7 +65,7 @@ public class FakeEntityPlayer extends EntityPlayer {
         try {
             PlayerInteractManager interactManager = new PlayerInteractManager(world);
             GameProfile gameProfile = server.getUserCache().getProfileIfCached(username);
-            if(gameMode == null) gameProfile = server.getUserCache().getProfile(username);
+            if (gameMode == null) gameProfile = server.getUserCache().getProfile(username);
             if (gameProfile == null) return null;
             if (gameProfile.getProperties().containsKey("textures")) {
                 try {

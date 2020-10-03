@@ -2,7 +2,17 @@ package com.ishland.bukkit.carpetplugin.lib.fakeplayer.action;
 
 import com.google.common.base.Preconditions;
 import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
-import net.minecraft.server.*;
+import net.minecraft.server.BlockPosition;
+import net.minecraft.server.Entity;
+import net.minecraft.server.EnumDirection;
+import net.minecraft.server.EnumHand;
+import net.minecraft.server.EnumInteractionResult;
+import net.minecraft.server.MovingObjectPosition;
+import net.minecraft.server.MovingObjectPositionBlock;
+import net.minecraft.server.MovingObjectPositionEntity;
+import net.minecraft.server.RayTrace;
+import net.minecraft.server.Vec3D;
+import net.minecraft.server.WorldServer;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,7 +76,7 @@ public class FakeEntityPlayerActionPack {
         activeActions.add(new Action(ActionType.USE, fakeEntityPlayer));
     }
 
-    public void doUse(int interval, int repeats){
+    public void doUse(int interval, int repeats) {
         unUse();
         activeActions.add(new Action(ActionType.USE, fakeEntityPlayer, interval, repeats));
     }

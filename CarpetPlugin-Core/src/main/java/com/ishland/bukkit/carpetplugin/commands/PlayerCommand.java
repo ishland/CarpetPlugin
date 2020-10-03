@@ -5,14 +5,22 @@ import com.ishland.bukkit.carpetplugin.lib.fakeplayer.action.FakeEntityPlayerAct
 import com.ishland.bukkit.carpetplugin.lib.fakeplayer.base.FakeEntityPlayer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.minecraft.server.*;
+import net.minecraft.server.ArgumentAnchor;
+import net.minecraft.server.ArgumentRotation;
+import net.minecraft.server.ArgumentVec3;
+import net.minecraft.server.CommandListenerWrapper;
+import net.minecraft.server.DedicatedPlayerList;
+import net.minecraft.server.DedicatedServer;
+import net.minecraft.server.EnumGamemode;
+import net.minecraft.server.Vec2F;
+import net.minecraft.server.Vec3D;
+import net.minecraft.server.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
@@ -26,7 +34,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.*;
+import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.argument;
+import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.getPlayers;
+import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.hasPermission;
+import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.literal;
+import static com.ishland.bukkit.carpetplugin.utils.BrigadierUtils.suggestMatching;
 
 public class PlayerCommand {
 
@@ -37,7 +49,6 @@ public class PlayerCommand {
                     60L,
                     TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
-    ;
 
     public void register() {
         final CommandDispatcher<CommandListenerWrapper> commandDispatcher =

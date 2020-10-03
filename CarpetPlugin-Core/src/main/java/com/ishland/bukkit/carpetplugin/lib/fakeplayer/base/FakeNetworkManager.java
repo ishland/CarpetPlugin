@@ -5,7 +5,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.minecraft.server.*;
+import net.minecraft.server.CrashReport;
+import net.minecraft.server.EnumProtocolDirection;
+import net.minecraft.server.NetworkManager;
+import net.minecraft.server.Packet;
+import net.minecraft.server.PacketDataSerializer;
+import net.minecraft.server.PacketPlayInKeepAlive;
+import net.minecraft.server.PacketPlayOutKeepAlive;
+import net.minecraft.server.ReportedException;
 
 import java.lang.reflect.Field;
 import java.net.SocketAddress;

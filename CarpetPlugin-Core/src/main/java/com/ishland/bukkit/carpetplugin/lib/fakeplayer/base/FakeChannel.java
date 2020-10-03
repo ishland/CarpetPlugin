@@ -1,6 +1,13 @@
 package com.ishland.bukkit.carpetplugin.lib.fakeplayer.base;
 
-import io.netty.channel.*;
+import io.netty.channel.AbstractChannel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.EventLoop;
 
 import java.net.SocketAddress;
 

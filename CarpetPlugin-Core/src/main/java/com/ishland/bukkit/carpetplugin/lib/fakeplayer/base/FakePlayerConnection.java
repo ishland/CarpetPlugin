@@ -1,7 +1,11 @@
 package com.ishland.bukkit.carpetplugin.lib.fakeplayer.base;
 
 import com.google.common.base.Suppliers;
-import net.minecraft.server.*;
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.NetworkManager;
+import net.minecraft.server.Packet;
+import net.minecraft.server.PlayerConnection;
 
 import java.lang.reflect.Field;
 import java.util.function.Supplier;
@@ -30,7 +34,7 @@ public class FakePlayerConnection extends PlayerConnection {
     public void tick() {
         try {
             final Runnable playerJoinReady = (Runnable) playerConnection$playerJoinReady.get().get(parent);
-            if(playerJoinReady != null){
+            if (playerJoinReady != null) {
                 playerJoinReady.run();
                 playerConnection$playerJoinReady.get().set(parent, null);
             }
