@@ -124,7 +124,7 @@ public class FakeEntityPlayer extends EntityPlayer {
 
     @Override
     public void killEntity() {
-        this.server.a(new TickTask(this.server.ah(), () -> {
+        this.server.a(new TickTask(this.server.ai(), () -> {
             this.networkManager.channel.close();
             this.networkManager
                     .j() // getNetworkHandler
@@ -134,7 +134,7 @@ public class FakeEntityPlayer extends EntityPlayer {
 
     @Override
     public void tick() {
-        if (this.server.ah()/* getTicks */ % 10 == 0) {
+        if (this.server.ai()/* getTicks */ % 10 == 0) {
             ((PlayerConnection) this.networkManager.j()/* getNetworkHandler */).syncPosition();
             this.getWorldServer().chunkProvider.movePlayer(this);
             if (fixStartingPosition != null) {

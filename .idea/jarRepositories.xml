@@ -46,5 +46,10 @@
       <option name="name" value="CommandAPI-repo" />
       <option name="url" value="https://githubraw.smlk.org/JorelAli/CommandAPI/mvn-repo/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="aliyun-mirror" />
+      <option name="name" value="aliyun-mirror" />
+      <option name="url" value="https://maven.aliyun.com/repository/public/" />
+    </remote-repository>
   </component>
 </project>
